@@ -1,0 +1,232 @@
+//IR SENSOR
+
+#define road1 10
+#define road2 11
+#define road3 12
+#define road4 13
+int r1sense;
+int r2sense;
+int r3sense;
+int r4sense;
+
+//LED
+
+#define R1 2
+#define G1 3
+#define R2 4
+#define G2 5
+#define R3 6
+#define G3 7
+#define R4 8
+#define G4 9
+
+//EMEREGENCY 
+#define rf1 14
+int rf1_sense;
+ 
+#define rf2 15
+int rf2_sense;
+
+#define rf3 16
+int rf3_sense;
+
+#define rf4 17
+int rf4_sense;
+
+void setup() 
+{
+  Serial.begin(9600);
+  
+  pinMode(road1,INPUT);
+  pinMode(road2,INPUT);
+  pinMode(road3,INPUT);
+  pinMode(road4,INPUT);
+
+  pinMode(rf1,INPUT);
+  pinMode(rf2,INPUT);
+  pinMode(rf3,INPUT);
+  pinMode(rf4,INPUT);
+  
+  pinMode(R1, OUTPUT);
+  pinMode(G1, OUTPUT);
+  pinMode(R2, OUTPUT);
+  pinMode(G2, OUTPUT);
+  pinMode(R3, OUTPUT);
+  pinMode(G3, OUTPUT);
+  pinMode(R4, OUTPUT);
+  pinMode(G4, OUTPUT);
+  digitalWrite(R1, LOW);
+  digitalWrite(G1, LOW);
+  digitalWrite(R2, LOW);
+  digitalWrite(G2, LOW);
+  digitalWrite(R3, LOW);
+  digitalWrite(G3, LOW);
+  digitalWrite(R4, LOW);
+  digitalWrite(G4, LOW);
+
+  Serial.println("READY TRAFFIC");
+}
+
+void loop() 
+{
+  rf1_sense=digitalRead(rf1);
+  rf2_sense=digitalRead(rf2);
+  rf3_sense=digitalRead(rf3);
+  rf4_sense=digitalRead(rf4);
+
+  r1sense=digitalRead(road1);
+  r1sense=1-r1sense;
+  Serial.print("r1sense : ");Serial.println(r1sense);
+  r2sense=digitalRead(road2);
+  r2sense=1-r2sense;
+  Serial.print("r2sense : ");Serial.println(r2sense);
+  r3sense=digitalRead(road3);
+  r3sense=1-r3sense;
+  Serial.print("r3sense : ");Serial.println(r3sense);
+  r4sense=digitalRead(road4);
+  r4sense=1-r4sense;
+  Serial.print("r4sense : ");Serial.println(r4sense);
+
+  if(rf1_sense==1 || rf2_sense==1 || rf3_sense==1 || rf4_sense==1)
+  {
+    Serial.println("emergency_road TRAFFIC");
+    emergency_road();
+  }
+  else
+  {
+    if(r1sense==1 || r2sense==1 || r3sense==1 || r4sense==1)
+    {
+      Serial.println("DENSITY TRAFFIC");
+      density_trafic();
+    }
+    else
+    {
+      Serial.println("NORMAL TRAFFIC");
+      normal_traffic();
+    }
+  }
+}
+void led_road1()
+{
+  digitalWrite(G1, HIGH); 
+  digitalWrite(R2, HIGH); 
+  digitalWrite(R3, HIGH); 
+  digitalWrite(R4, HIGH); 
+  delay(5000);
+  digitalWrite(G1, LOW);
+  digitalWrite(R2, LOW);
+  digitalWrite(R3, LOW);
+  digitalWrite(R4, LOW);
+}
+void led_road2()
+{
+  digitalWrite(G2, HIGH); 
+  digitalWrite(R3, HIGH); 
+  digitalWrite(R4, HIGH); 
+  digitalWrite(R1, HIGH); 
+  delay(5000);
+  digitalWrite(G2, LOW);
+  digitalWrite(R3, LOW);
+  digitalWrite(R4, LOW);
+  digitalWrite(R1, LOW);
+}
+void led_road3()
+{
+  digitalWrite(G3, HIGH); 
+  digitalWrite(R4, HIGH); 
+  digitalWrite(R1, HIGH); 
+  digitalWrite(R2, HIGH); 
+  delay(5000);
+  digitalWrite(G3, LOW);
+  digitalWrite(R4, LOW);
+  digitalWrite(R1, LOW);
+  digitalWrite(R2, LOW);
+}
+void led_road4()
+{
+  digitalWrite(G4, HIGH); 
+  digitalWrite(R1, HIGH); 
+  digitalWrite(R2, HIGH); 
+  digitalWrite(R3, HIGH); 
+  delay(5000);
+  digitalWrite(G4, LOW);
+  digitalWrite(R1, LOW);
+  digitalWrite(R2, LOW);
+  digitalWrite(R3, LOW);
+}
+
+void normal_traffic()
+{
+    led_road1();
+    density_trafic();emergency_road();
+    led_road2();
+    density_trafic();emergency_road();
+    led_road3();
+    density_trafic();emergency_road();
+    led_road4();
+    density_trafic();emergency_road();
+}
+void density_trafic() 
+{
+  r1sense=digitalRead(road1);
+  r1sense=1-r1sense;
+  Serial.print("r1sense : ");Serial.println(r1sense);
+  r2sense=digitalRead(road2);
+  r2sense=1-r2sense;
+  Serial.print("r2sense : ");Serial.println(r2sense);
+  r3sense=digitalRead(road3);
+  r3sense=1-r3sense;
+  Serial.print("r3sense : ");Serial.println(r3sense);
+  r4sense=digitalRead(road4);
+  r4sense=1-r4sense;
+  Serial.print("r4sense : ");Serial.println(r4sense);
+  
+  if(r1sense==1 && r2sense==0 && r3sense==0 && r4sense==0)
+  {
+    led_road1();
+    emergency_road();
+  }
+  else if(r1sense==0 && r2sense==1 && r3sense==0 && r4sense==0)
+  {
+    led_road2();
+    emergency_road();
+  }
+  else if(r1sense==0 && r2sense==0 && r3sense==1 && r4sense==0)
+  {
+    led_road3();
+    emergency_road();
+  }
+  else if(r1sense==0 && r2sense==0 && r3sense==0 && r4sense==1)
+  {
+    led_road4();
+    emergency_road();
+  }
+}
+void emergency_road()
+{
+  rf1_sense=digitalRead(rf1);
+  Serial.print("rf1_sense : ");Serial.println(rf1_sense);
+  rf2_sense=digitalRead(rf2);
+  Serial.print("rf2_sense : ");Serial.println(rf2_sense);
+  rf3_sense=digitalRead(rf3);
+  Serial.print("rf3_sense : ");Serial.println(rf3_sense);
+  rf4_sense=digitalRead(rf4);
+  Serial.print("rf4_sense : ");Serial.println(rf4_sense);
+  
+  if(rf1_sense==1 && rf2_sense==0 && rf3_sense==0 && rf4_sense==0)
+  {
+    led_road1();
+  }
+  else if(rf1_sense==0 && rf2_sense==1 && rf3_sense==0 && rf4_sense==0)
+  {
+    led_road2();
+  }
+  else if(rf1_sense==0 && rf2_sense==0 && rf3_sense==1 && rf4_sense==0)
+  {
+    led_road3();
+  }
+  else if(rf1_sense==0 && rf2_sense==0 && rf3_sense==0 && rf4_sense==1)
+  {
+    led_road4();
+  }
+}
