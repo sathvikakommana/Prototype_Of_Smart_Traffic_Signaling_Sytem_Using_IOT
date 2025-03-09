@@ -1,0 +1,70 @@
+#include<ESP8266WiFi.h>
+#include<ThingSpeak.h>
+#include<WiFiClient.h>
+
+
+WiFiClient client ;
+char ssid[]="project01";
+char password[]="123456789";
+char WriteApi_Key[]="9KRGQOIN4KDHSMND";
+unsigned long ChannelId=2735411;
+int count = 0;
+char card_no[13];
+char card1[13] = "123456789012";
+char card2[13] = "234567890123";
+char card3[13] = "345678901234";
+
+void setup() {
+  // put your setup code here, to run once:   
+  Serial.begin(9600);
+  delay(10);
+  WiFi.begin(ssid,password);
+  while(WiFi.status()!=WL_CONNECTED)
+  {
+    delay(500);
+    Serial.print(".");
+    }
+  Serial.println("Connected");
+  ThingSpeak.begin(client);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  String bikeNumber = "124362987123";   
+  String namee = "Ram";       
+  int age = 30;                  
+  String gender = "Male";  
+ 
+  ThingSpeak.writeField(ChannelId,1,bikeNumber,WriteApi_Key);
+  ThingSpeak.writeField(ChannelId,2,namee,WriteApi_Key);
+  ThingSpeak.writeField(ChannelId,3,age,WriteApi_Key);
+  ThingSpeak.writeField(ChannelId,4,gender,WriteApi_Key);
+  delay(1000);
+
+   if(Serial.available())
+   {
+      count = 0;
+      while(Serial.available() && count < 12)
+      {
+         card_no[count] = Serial.read();
+         count++;
+         delay(5);
+      }
+card_no[count] = '\0';
+Serial.print("Entered Card Number: ");
+      Serial.println(card_no);
+       if (strcmp(card_no, card1) == 0) {
+         Serial.println("Fine to Card 1");
+      } 
+      else if (strcmp(card_no, card2) == 0) {
+         Serial.println("Fine to Card 2");
+      } 
+      else if (strcmp(card_no, card3) == 0) {
+         Serial.println("Fine to Card 3");
+      } 
+      else {
+         Serial.println("NO FINE ");
+      }
+     }
+
+  }
