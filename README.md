@@ -1,5 +1,4 @@
 # Prototype of Smart Traffic SignalingSystem Using IOT
-# Smart Traffic Signaling System Using IoT
 
 ## Overview  
 The Smart Traffic Signaling System Using IoT is an intelligent traffic management solution designed to optimize traffic flow, prioritize emergency vehicles, and detect footpath violations. The system is implemented as a prototype and leverages IoT components such as IR sensors, RF modules, and cloud-based monitoring to enhance road safety and reduce congestion.  
